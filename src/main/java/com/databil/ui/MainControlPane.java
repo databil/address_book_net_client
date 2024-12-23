@@ -22,7 +22,7 @@ public class MainControlPane extends GridPane {
     public MainControlPane() throws InterruptedException {
         contactService = new ContactService();
         contactService.readContactsFromServer();
-        ContactForm contactPane = new ContactForm();
+        ContactForm contactPane = new ContactForm(new Contact(), contactService);
 
         TableColumn<Contact, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(

@@ -2,17 +2,17 @@ package com.databil.ui;
 
 import com.databil.model.Contact;
 
+import com.databil.model.Response;
+import com.databil.model.Status;
+import com.databil.service.ContactService;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-
 public class ContactForm extends GridPane {
 
-
-  /*  private Contact contact;
-
+    private final ContactService contactService;
     private TextField nameField = new TextField();
     private TextField surnameField = new TextField();
     private TextField phoneField = new TextField();
@@ -22,13 +22,15 @@ public class ContactForm extends GridPane {
         //TO-DO implement delete
 
         this.contactService = contactService;
-        this.contact = contact;
         Button saveButton = new Button("Save");
         Button cancelButton = new Button("Cancel");
 
         Label nameLabel = new Label("Name");
         Label surnameLabel = new Label("Surname");
         Label phoneLabel = new Label("Phone");
+
+        Label statusLabel = new Label("Status: ");
+
 
         add(nameLabel, 0, 0);
         add(nameField, 1, 0);
@@ -42,18 +44,34 @@ public class ContactForm extends GridPane {
         add(saveButton, 0, 3);
         add(cancelButton, 1, 3);
 
+        add(statusLabel, 0, 6);
+
         saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             contact.setName(nameField.getText());
             contact.setSurname(surnameField.getText());
             contact.setPhone(phoneField.getText());
 
-            Contact oldContact = contactService.findByPhone(contact.getPhone());
-            if (oldContact != null) {
+            Response findResponse = contactService.findByPhone(contact);
+            if (findResponse.status() != Status.OK && !findResponse.contactList().isEmpty()) {
                 System.out.println("Updating existing contact");
-                contactService.update(oldContact);
-            } else {
+                Response updateResponse = contactService.update(findResponse.contactList().getFirst());
+                if (updateResponse.status() == Status.OK) {
+                    contactService.getContacts().add(updateResponse.contactList().getFirst());
+                    statusLabel.setText("Updated");
+                } else {
+                    statusLabel.setText("Error: Not Updated");
+                }
+            } else if(findResponse.contactList() == null) {
                 System.out.println("Creating new contact");
-                contactService.save(contact);
+                Response createResponse = contactService.createContact(contact);
+                if (createResponse.status() == Status.OK) {
+                    contactService.getContacts().add(createResponse.contactList().getFirst());
+                    statusLabel.setText("Created");
+                } else {
+                    statusLabel.setText("Error: Not Created");
+                }
+            } else {
+                statusLabel.setText("Error: Error on searching!");
             }
             nameField.clear();
             surnameField.clear();
@@ -67,6 +85,5 @@ public class ContactForm extends GridPane {
         this.surnameField.setText(contact.getSurname());
         this.phoneField.setText(contact.getPhone());
     }
-    */
 
 }

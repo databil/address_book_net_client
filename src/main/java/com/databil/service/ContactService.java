@@ -1,10 +1,6 @@
 package com.databil.service;
 
-import com.databil.model.Command;
-import com.databil.model.CommandEnum;
-import com.databil.model.Contact;
-import com.databil.model.Response;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.databil.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
@@ -12,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,13 +34,13 @@ public class ContactService {
         contacts = response.contactList();
     }
 
-    public void createContact(Contact contact) {
+    public Response createContact(Contact contact) {
 
         Command command = new Command(CommandEnum.NEW_COMMAND, contact);
 
         Response response = sendCommand(command);
         contacts = response.contactList();
-
+        return response;
     }
 
     public Response sendCommand(Command command) {
@@ -64,5 +59,15 @@ public class ContactService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Response findByPhone(Contact contact) {
+        Command command = new Command(CommandEnum.FIND_COMMAND, contact);
+        return sendCommand(command);
+    }
+
+    public Response update(Contact newContact) {
+        Command command = new Command(CommandEnum.UPDATE_COMMAND, newContact);
+        return sendCommand(command);
     }
 }
