@@ -3,6 +3,7 @@ package com.databil.service;
 import com.databil.model.Command;
 import com.databil.model.CommandEnum;
 import com.databil.model.Contact;
+import com.databil.model.Response;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -32,21 +33,34 @@ public class ContactService {
     }
 
     public void readContactsFromServer() {
-        try (Socket socket = new Socket(SERVER_IP, SERVER_PORT)) {
 
+        Command command = new Command(CommandEnum.LIST_COMMAND, null);
+        Response response = sendCommand(command);
+        contacts = response.contactList();
+    }
+
+    public void createContact(Contact contact) {
+
+        Command command = new Command(CommandEnum.NEW_COMMAND, contact);
+
+        Response response = sendCommand(command);
+        contacts = response.contactList();
+
+    }
+
+    public Response sendCommand(Command command) {
+        try (Socket socket = new Socket(SERVER_IP, SERVER_PORT)) {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
-            Command command = new Command(CommandEnum.LIST_COMMAND, null);
             String commandAsJsonString = objectMapper.writeValueAsString(command);
+
             System.out.println("sending command to server " + commandAsJsonString);
             out.println(commandAsJsonString);
             //IO blocks waiting for list of contacts
-            String response = in.readLine();
-            contacts = objectMapper.readValue(response, new TypeReference<ArrayList<Contact>>() {});
+            String responseString = in.readLine();
 
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
+            return objectMapper.readValue(responseString, Response.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
