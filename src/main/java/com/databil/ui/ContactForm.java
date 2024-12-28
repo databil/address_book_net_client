@@ -52,27 +52,31 @@ public class ContactForm extends GridPane {
             contact.setPhone(phoneField.getText());
 
             Response findResponse = contactService.findByPhone(contact);
-            if (findResponse.status() != Status.OK && !findResponse.contactList().isEmpty()) {
-                System.out.println("Updating existing contact");
-                Response updateResponse = contactService.update(findResponse.contactList().getFirst());
-                if (updateResponse.status() == Status.OK) {
-                    contactService.getContacts().add(updateResponse.contactList().getFirst());
-                    statusLabel.setText("Updated");
-                } else {
-                    statusLabel.setText("Error: Not Updated");
-                }
-            } else if(findResponse.contactList() == null) {
-                System.out.println("Creating new contact");
-                Response createResponse = contactService.createContact(contact);
-                if (createResponse.status() == Status.OK) {
-                    contactService.getContacts().add(createResponse.contactList().getFirst());
-                    statusLabel.setText("Created");
-                } else {
-                    statusLabel.setText("Error: Not Created");
-                }
+            if (findResponse.status() != Status.OK) {
+                statusLabel.setText(findResponse.status().toString());
+                System.out.println(findResponse);
             } else {
-                statusLabel.setText("Error: Error on searching!");
+                if (findResponse.contactList() != null) {
+                    System.out.println("Updating existing contact");
+                    Response updateResponse = contactService.update(contact);
+                    if (updateResponse.status() == Status.OK) {
+                        contactService.getContacts().add(updateResponse.contactList().getFirst());
+                        statusLabel.setText("Updated");
+                    } else {
+                        statusLabel.setText("Error: Not Updated");
+                    }
+                } else {
+                    System.out.println("Creating new contact");
+                    Response createResponse = contactService.createContact(contact);
+                    if (createResponse.status() == Status.OK) {
+                        contactService.getContacts().add(createResponse.contactList().getFirst());
+                        statusLabel.setText("Created");
+                    } else {
+                        statusLabel.setText("Error: Not Created");
+                    }
+                }
             }
+
             nameField.clear();
             surnameField.clear();
 

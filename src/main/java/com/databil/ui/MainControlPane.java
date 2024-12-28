@@ -54,7 +54,7 @@ public class MainControlPane extends GridPane {
                     @Override
                     public void onChanged(
                             Change<? extends Contact> change) {
-                        //contactPane.setContact(selectedItems.getFirst());
+                        contactPane.setContact(selectedItems.getFirst());
                     }
                 });
 
