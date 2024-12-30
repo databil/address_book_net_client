@@ -35,7 +35,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>MainUI</mainClass>
+                    <mainClass>com.databil.Main</mainClass>
                 </configuration>
             </plugin>
         </plugins>

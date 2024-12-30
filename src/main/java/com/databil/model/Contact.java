@@ -1,5 +1,4 @@
 package com.databil.model;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Contact {
@@ -10,13 +9,25 @@ public class Contact {
 
     private String phone;
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    private String userId;
+
     public Contact() {}
     public Contact(@JsonProperty("name") String name,
                    @JsonProperty("surname") String surname,
-                   @JsonProperty("phone") String phone) {
+                   @JsonProperty("phone") String phone,
+                   @JsonProperty("userId") String userId) {
         this.name = name;
         this.surname = surname;
         this.phone = phone;
+        this.userId = userId;
     }
 
     public String getName() {
@@ -47,8 +58,9 @@ public class Contact {
     public String toString() {
         return "Contact{" +
                 "name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
                 ", surname='" + surname + '\'' +
+                ", phone='" + phone + '\'' +
+                ", userId='" + userId + '\'' +
                 '}';
     }
 }

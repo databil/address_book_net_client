@@ -18,9 +18,10 @@ public class ContactService {
     ObjectMapper objectMapper = new ObjectMapper();
 
     List<Contact> contacts = new ArrayList<>();
+    private final String userId;
 
-    public ContactService() {
-
+    public ContactService(String userId) {
+        this.userId = userId;
     }
 
     public List<Contact> getContacts() {
@@ -29,14 +30,15 @@ public class ContactService {
 
     public void readContactsFromServer() {
 
-        Command command = new Command(CommandEnum.LIST_COMMAND, null);
+        Command command = new Command(CommandEnum.LIST_COMMAND, null, userId);
         Response response = sendCommand(command);
         contacts = response.contactList();
     }
 
     public Response createContact(Contact contact) {
 
-        Command command = new Command(CommandEnum.NEW_COMMAND, contact);
+        contact.setUserId(userId);
+        Command command = new Command(CommandEnum.NEW_COMMAND, contact, userId);
 
         Response response = sendCommand(command);
         contacts = response.contactList();
@@ -62,12 +64,14 @@ public class ContactService {
     }
 
     public Response findByPhone(Contact contact) {
-        Command command = new Command(CommandEnum.FIND_COMMAND, contact);
+        contact.setUserId(userId);
+        Command command = new Command(CommandEnum.FIND_COMMAND, contact, userId);
         return sendCommand(command);
     }
 
     public Response update(Contact newContact) {
-        Command command = new Command(CommandEnum.UPDATE_COMMAND, newContact);
+        newContact.setUserId(userId);
+        Command command = new Command(CommandEnum.UPDATE_COMMAND, newContact, userId);
         return sendCommand(command);
     }
 }

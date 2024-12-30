@@ -17,10 +17,11 @@ public class MainControlPane extends GridPane {
     HBox hBox = new HBox();
     TableView<Contact> tableView = new TableView();
 
+    private final String userId = "user1";
 
 
     public MainControlPane() throws InterruptedException {
-        contactService = new ContactService();
+        contactService = new ContactService(userId);
         contactService.readContactsFromServer();
         ContactForm contactPane = new ContactForm(new Contact(), contactService);
 
