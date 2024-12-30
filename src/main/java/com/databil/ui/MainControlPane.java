@@ -17,12 +17,13 @@ public class MainControlPane extends GridPane {
     HBox hBox = new HBox();
     TableView<Contact> tableView = new TableView();
 
+    private final String userId = "user1";
 
 
     public MainControlPane() throws InterruptedException {
-        contactService = new ContactService();
+        contactService = new ContactService(userId);
         contactService.readContactsFromServer();
-        ContactForm contactPane = new ContactForm();
+        ContactForm contactPane = new ContactForm(new Contact(), contactService);
 
         TableColumn<Contact, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(
@@ -54,7 +55,7 @@ public class MainControlPane extends GridPane {
                     @Override
                     public void onChanged(
                             Change<? extends Contact> change) {
-                        //contactPane.setContact(selectedItems.getFirst());
+                        contactPane.setContact(selectedItems.getFirst());
                     }
                 });
 
